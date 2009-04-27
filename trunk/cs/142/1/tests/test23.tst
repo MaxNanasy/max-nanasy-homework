@@ -1,0 +1,1 @@
+const TEST = 12;void proc1() {	var x : int;	void proc11() {		var y : int;		type t = newType;		int proc111() {			return y;		}		int proc112() {			return ::proc111() + y;		}		y = ::proc111() + ::proc112();	}	void proc12() {		int proc121() {			return TEST;		}	}}main() {	::proc1();}

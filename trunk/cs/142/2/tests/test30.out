@@ -1,0 +1,7 @@
+program
+   statementSequence
+      statement
+         output
+            parameters
+               designator
+               designator

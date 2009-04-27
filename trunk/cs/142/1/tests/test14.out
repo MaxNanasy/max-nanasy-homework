@@ -1,0 +1,1 @@
+ VOID  ident  (  )  {  PRINT  (  ident  [  number  +  number  ]  ,  ident  [  ident  *  number  ]  )  ;  }  <EOT> 

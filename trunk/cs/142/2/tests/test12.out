@@ -1,0 +1,17 @@
+program
+   procedureDeclarations
+      retType
+      statementSequence
+         statement
+            returnStatement
+               expression
+                  term
+                     factor
+   declarations
+      newType
+         type
+   statementSequence
+      statement
+         procedureStatement
+            procedureCall
+Error: }

@@ -1,0 +1,1 @@
+ CONST  ident  =  number  ;  TYPE  ident  =  ident  ;  VAR  ident  ,  ident  :  ident  ;  ident  [  number  +  number  *  number  /  number  ]  =  ident  ;  ==  !=  <  <=  >=  >  }  {  *  ident  /  GET  PRINT  ;  ident  ident  number  number  -  number  +  number  ;  number  -  number  +  number  }  <EOT>

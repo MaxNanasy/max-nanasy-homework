@@ -1,0 +1,22 @@
+program
+   statementSequence
+      statement
+         ifStatement
+            condition
+               expression
+                  term
+                     factor
+                        designator
+               expression
+                  term
+                     factor
+            statementSequence
+               statement
+                  assignment
+                     designator
+                     expression
+                        term
+                           factor
+                              designator
+                        term
+                           factor

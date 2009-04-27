@@ -1,0 +1,8 @@
+Error: SYNTAX: ident
+***** Symbol Table Contents *****
+N: int C: TYPE T: null
+N: void C: TYPE T: null
+N: short C: TYPE T: null
+N: const1 C: CONST T: short V: 11
+N: sym1 C: PROCEDURE T: void
+-->N: const1 C: CONST T: short V: 33

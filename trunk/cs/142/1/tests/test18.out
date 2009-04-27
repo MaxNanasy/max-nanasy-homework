@@ -1,0 +1,1 @@
+ MAIN  (  )  {  WHILE  (  ident  !=  ident  [  number  ]  )  {  ident  [  number  ]  =  ident  [  number  ]  +  ident  [  ident  [  number  ]  ]  ;  }  }  <EOT> 

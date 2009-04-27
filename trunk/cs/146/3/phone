@@ -1,0 +1,32 @@
+#!/bin/bash
+
+DB=~/phone.txt
+
+touch $DB
+
+INSENSITIVITY=
+ADD=no
+
+while getopts ai option
+do
+    case $option in
+	a)  ADD=yesprintf '%s\n' "$OPTARG" >> "$DB"
+	    ;;
+	i)  INSENSITIVITY=-i
+	    ;;
+	*)  echo "Illegal option $option" >&2
+	    exit 1
+    esac
+done
+
+if [ "$ADD" = yes -a -n "$INSENSITIVITY" ]
+then
+    if [ -n "$INSENSITIVITY" ]
+    then
+	echo 'Cannot specify both -a and -i' >&2
+	exit 1
+    fi
+    printf '%s\n' "${!OPTIND}" >> $DB
+else
+    grep $INSENSITIVITY a "$DB"
+fi

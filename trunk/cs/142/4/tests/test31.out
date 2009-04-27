@@ -1,0 +1,8 @@
+***** Symbol Table Contents *****
+N: int C: TYPE T: null
+N: void C: TYPE T: null
+N: short C: TYPE T: null
+N: t1 C: TYPE T: short D: 10
+N: t2 C: TYPE T: t1 D: 10
+N: t3 C: TYPE T: t2 D: 10
+N: MAIN C: PROCEDURE T: void

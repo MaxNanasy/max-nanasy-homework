@@ -1,0 +1,1 @@
+main(){	var test1,test2,test3 : int;	test1 = (5+5)*(test2*test3);}

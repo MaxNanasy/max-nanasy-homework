@@ -1,0 +1,1 @@
+ MAIN  (  )  {  VAR  ident  ,  ident  ,  ident  :  INT  ;  ident  =  (  number  +  number  )  *  (  ident  *  ident  )  ;  }  <EOT> 

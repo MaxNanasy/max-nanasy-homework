@@ -1,0 +1,1 @@
+main () {        if (a[3] < 67 db4) {	print(a);	}	}

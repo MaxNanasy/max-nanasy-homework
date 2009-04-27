@@ -1,0 +1,17 @@
+program
+   procedureDeclarations
+      retType
+      statementSequence
+         statement
+            assignment
+               designator
+               expression
+                  term
+                     factor
+   statementSequence
+      statement
+         assignment
+            designator
+            expression
+               term
+                  factor

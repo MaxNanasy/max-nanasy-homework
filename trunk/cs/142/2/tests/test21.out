@@ -1,0 +1,13 @@
+program
+   declarations
+      newType
+         type
+   statementSequence
+      statement
+         ifStatement
+            condition
+               expression
+                  term
+                     factor
+                        designator
+Error: =

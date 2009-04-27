@@ -1,0 +1,1 @@
+ TYPE  ident  =  ARRAY  number  OF  ARRAY  number  OF  ARRAY  number  OF  INT  ;  MAIN  (  )  {  }  <EOT> 

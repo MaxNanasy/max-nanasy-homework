@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for user in `who -q | grep -v '^#' | tr -s ' ' '\n' | sort | uniq`
+do
+    if [[ `groups $user` =~ \bugrad\b ]]
+    then printf '%s ' $user
+    fi
+done
+
+echo

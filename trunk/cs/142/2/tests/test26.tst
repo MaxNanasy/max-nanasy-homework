@@ -1,0 +1,1 @@
+var a:int;void myProc(){	const test=5;	test1=test==5;}

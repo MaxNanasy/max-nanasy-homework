@@ -1,0 +1,20 @@
+program
+   procedureDeclarations
+      retType
+      procedureFormalParams
+         type
+         type
+      statementSequence
+         statement
+            assignment
+               designator
+               expression
+                  term
+                     factor
+   statementSequence
+      statement
+         assignment
+            designator
+            expression
+               term
+                  factor

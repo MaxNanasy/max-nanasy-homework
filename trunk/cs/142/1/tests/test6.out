@@ -1,0 +1,1 @@
+ MAIN  (  )  {  VOID  ident  (  )  {  SHORT  ident  (  )  {  VAR  ident  :  SHORT  ;  }  RETURN  ident  (  )  ;  }  CONST  ident  =  number  ;  VAR  ident  ,  ident  ,  ident  :  ident  ;  }  <EOT>

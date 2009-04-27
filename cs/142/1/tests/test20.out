@@ -1,0 +1,1 @@
+ MAIN  (  )  {  TYPE  ident  =  ARRAY  number  OF  INT  ;  TYPE  ident  =  ARRAY  number  OF  ident  ;  IF  (  ident  !=  ident  )  {  ident  =  number  ;  }  ELSE  {  ident  =  number  ;  }  }  <EOT> 

@@ -1,0 +1,14 @@
+program
+   statementSequence
+      statement
+         assignment
+            designator
+            expression
+               term
+                  factor
+                     designator
+               term
+                  factor
+                     designator
+                  factor
+                     procedureCall

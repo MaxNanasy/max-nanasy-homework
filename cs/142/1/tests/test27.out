@@ -1,0 +1,1 @@
+ TYPE  ident  =  ARRAY  number  OF  VOID  ;  MAIN  (  )  {  }  <EOT> 

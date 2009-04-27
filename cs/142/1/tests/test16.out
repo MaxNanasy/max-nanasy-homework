@@ -1,0 +1,1 @@
+ VAR  ident  :  INT  ;  VOID  ident  (  )  {  CONST  ident  =  number  ;  ident  =  ident  ==  number  ;  }  <EOT> 

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+while getopts abc:d option
+do
+    echo "--> $option"
+done

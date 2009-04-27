@@ -1,0 +1,9 @@
+program
+   declarations
+      newType
+         type
+   statementSequence
+      statement
+         assignment
+            designator
+Error: +

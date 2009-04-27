@@ -1,0 +1,11 @@
+Error: SEMANTIC: ARITY ERROR
+***** Symbol Table Contents *****
+N: int C: TYPE T: null
+N: void C: TYPE T: null
+N: short C: TYPE T: null
+N: t1 C: TYPE T: int D: 10
+N: t2 C: TYPE T: t1
+N: t3 C: TYPE T: t2
+N: t4 C: TYPE T: t3
+N: MAIN C: PROCEDURE T: void
+-->N: a C: VAR T: t4

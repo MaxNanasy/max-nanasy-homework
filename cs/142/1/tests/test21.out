@@ -1,0 +1,1 @@
+ MAIN  (  )  {  VAR  ident  ,  ident  :  INT  ;  IF  (  ident  <  =  ident  )  {  ident  =  ident  ;  }  }  <EOT> 

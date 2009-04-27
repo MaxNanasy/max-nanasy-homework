@@ -1,0 +1,1 @@
+main(){	type myType = array 5 of int;	type myType2 = array 10 of myType;	if(myType != myType2){		myVar = 0;	}	else{		myVar = 1;	}}

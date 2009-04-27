@@ -1,0 +1,16 @@
+program
+   procedureDeclarations
+      retType
+      statementSequence
+         statement
+            input
+               parameters
+                  designator
+                     expression
+                        term
+                           factor
+                  designator
+                     expression
+                        term
+                           factor
+Error: }

@@ -1,0 +1,21 @@
+program
+   declarations
+      newType
+         type
+   statementSequence
+      statement
+         assignment
+            designator
+            expression
+               term
+                  factor
+                     procedureCall
+               term
+                  factor
+                     procedureCall
+               term
+                  factor
+                     procedureCall
+      statement
+         procedureStatement
+            procedureCall

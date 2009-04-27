@@ -1,0 +1,1 @@
+ INT  ident  (  )  {  VAR  ident  :  INT  ;  ident  =  number  ;  RETURN  ident  ;  }  MAIN  (  )  {  :  :  ident  (  )  ;  }  <EOT> 

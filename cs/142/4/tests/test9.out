@@ -1,0 +1,6 @@
+Error: SEMANTIC: TYPE MISMATCH
+***** Symbol Table Contents *****
+N: int C: TYPE T: null
+N: void C: TYPE T: null
+N: short C: TYPE T: null
+N: p1 C: PROCEDURE T: void

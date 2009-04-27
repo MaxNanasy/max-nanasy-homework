@@ -1,0 +1,13 @@
+program
+   declarations
+      newType
+         type
+   statementSequence
+      statement
+         input
+            parameters
+               designator
+      statement
+         output
+            parameters
+               designator

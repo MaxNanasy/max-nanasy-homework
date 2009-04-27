@@ -1,0 +1,7 @@
+Error: SEMANTIC: REDEFINED SYMBOL
+***** Symbol Table Contents *****
+N: int C: TYPE T: null
+N: void C: TYPE T: null
+N: short C: TYPE T: null
+N: newType C: TYPE T: short
+N: newType C: VAR T: newType

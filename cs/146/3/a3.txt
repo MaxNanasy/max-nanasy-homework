@@ -1,0 +1,48 @@
+                            CS146
+                            =====
+                        Assignment #3
+                Due Tues. Apr 29 at beginning of class
+
+(10 marks) 1. Write a Bourne shell script called {\tt rename} which
+renames a list of files in a systematic way.  It's usage looks like:
+
+    rename 'regexp/replStr' [list-of-files]
+
+"regexp" is a regular expression, and "replStr" is a replacement string.  For
+each filename that matches the regular expression, the part of the name that
+matches the regular expression is replaced by the replacement string.  eg.,
+
+    $ ls
+    foo.c   bar.c   bazar.f
+    $ rename 'a/aa' *       # duplicate the first "a" in the filename.
+    $ ls
+    foo.c   baar.c  baazar.f
+    $ rename '\.c$/.f' *.c  # rename all files ending in ".c" to end with ".f"
+    $ ls
+    foo.f   baar.f   baazar.f
+
+(10  marks) 2.  Project 2 at the end of Chapter 5 in the course text
+(Glass + Ables, page 209), except that you don't need addresses, just
+names and phone numbers.  The utility should be called "phone", the
+database should be stored in your home directory in a file called
+"phone.txt", and it should be searchable using any string that appears
+in phone.txt.  You add entries as follows:
+
+    $ phone -a "John Smith[tab]949-824-1234"
+
+where [tab] is the tab character.  phone should allow the option "-i",
+which means "the search is case insensitive" (by default it should be
+case sensitive).
+
+(10 marks) 3.  Project 3 on the same page as above.  The usage should be
+as follows:
+
+    zap [-f] [-N] [-c CPU_PERCENT] [-uid USER_ID] [-u USER_NAME] \
+	[-t TOTAL_TIME] [-m MEMORY_USAGE]
+
+where anything in brackets is optional.  zap should, by default,
+print the output of the "ps" command for the process that it's about
+to kill, ask for confirmation, and actually perform the kill only
+if the confirmation string starts with Y or y.  If given the "-f"
+(force) option, it skips the confirmation; if given the -N option,
+it kills with signal N rather than the default.

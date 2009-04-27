@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for ((i=2; i<=$#; i++))
+do
+    mv "${!i}" "`printf '%s' "${!i}" | sed "s/$1/"`"
+done

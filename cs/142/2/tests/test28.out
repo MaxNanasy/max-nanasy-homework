@@ -1,0 +1,20 @@
+program
+   procedureDeclarations
+      retType
+      statementSequence
+         statement
+            output
+               parameters
+                  designator
+                     expression
+                        term
+                           factor
+                        term
+                           factor
+                  designator
+                     expression
+                        term
+                           factor
+                              designator
+                           factor
+Error: <EOT>

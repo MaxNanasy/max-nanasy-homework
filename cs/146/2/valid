@@ -1,0 +1,13 @@
+#!/bin/bash
+if (( $# == 0 ))
+then
+    echo 'Not enough arguments.' > /dev/stderr
+    exit 1
+fi
+
+if [[ "$1" =~ ^[A-Za-z_][A-Za-z_0-9]*$ ]]
+then
+    echo yes
+else
+    echo no
+fi

@@ -1,0 +1,2 @@
+#!/bin/sh
+ls -Al | tail +2 | sort -nk 5

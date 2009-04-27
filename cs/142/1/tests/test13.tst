@@ -1,0 +1,1 @@
+void myProc(){	get(a[0], vara[2]);}main(){}

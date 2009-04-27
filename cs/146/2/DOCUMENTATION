@@ -1,0 +1,10 @@
+1. 'cat x y  > y' would append the contents of y to the contents of x and write the result to y.
+   'cat x   >> x' would repeat the contents of x in place.
+   These actually do create error messages, since input files are apparently not allowed to be also output files with cat.
+2. cx: This script sets execute permission for all users on each file with chmod.
+3. nf: This script pipes filenames from ls to wc.
+4. lss: This script pipes file listings from ls to tail (to remove the header) and then to sort.
+5. whoson: This script first gets a sorted list of all logged-in users by using who, then grep (to remove the footer), then tr (to convert spaces to newlines), then sort, and then to uniq (to remove duplicates).  It then checks each user's groups against ugrad and prints the name if there is a match.  It then outputs a newline.
+6. howmany: This script first initializes an accumulator to zero.  It then gets a sorted list of all logged-in users in the same manner as whoson does.  It then checks each user's groups against ugrad and increments the accumulator if there is a match.  It then outputs the accumulator.
+7. valid: This script first ensures that it has at least 1 argument; if not, it prints an error message.  It then checks the first argument against a regular expression that matches all and only valid shell variables.  It then prints yes or no accordingly.
+8. This script iterates through its arguments and prints with printf each one in the requested format.

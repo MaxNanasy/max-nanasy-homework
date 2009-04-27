@@ -1,0 +1,1 @@
+int myMethod(){	var test:int;	test=5;	return test;}main(){	::myMethod();}

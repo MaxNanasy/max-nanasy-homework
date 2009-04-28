@@ -1,0 +1,4 @@
+5c5
+< javac -g *.java
+---
+> javac -g *.java || exit 1

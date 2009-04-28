@@ -5,6 +5,6 @@
 5. no ; no ; yes ; yes, but for each non-hidden file within the directory, its name and an error message, but not the regular 'ls -l' information, will be shown
 6. no ; creating a hard link creates a new pointer, which does not care about the original file's name, to the inode, which persists until all hard links have been removed ; yes ; creating a symbolic link creates a new pointer to the original file's name, rather than to the inode, such that the symbolic link's inode at any given point is that of the file named in the link, and if the file doesn't exist, the symbolic link does not reference anything, so the file system can remove the inode in question if there are no more hard links to it
 7. yes ; mv ; yes ; 'cp -r'
-8. 47 ; 'df | wc -l'
+8. 43 ; "ssh rodan.ics.uci.edu 'df | wc -l'"
 9. /dev/pts/1 ; 'ls -lL /dev/*/* | grep $USER'
-10. 
+10. 11111111 11011100 ; 1100101 ; 1010001 01011101

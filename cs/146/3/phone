@@ -2,7 +2,7 @@
 
 DB=~/phone.txt
 
-touch $DB
+touch -a "$DB"
 
 INSENSITIVITY=
 ADD=no
@@ -28,5 +28,5 @@ then
     fi
     printf '%s\n' "${!OPTIND}" >> $DB
 else
-    grep $INSENSITIVITY a "$DB"
+    grep $INSENSITIVITY -- a "$DB"
 fi

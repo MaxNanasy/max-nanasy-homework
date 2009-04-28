@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for ((i=0 ; i<=$# ; i++)) # in `seq 0 $#`
+for ((i=0 ; i<=$# ; i++))
 do
     printf $i': %s\n' "${!i}"
 done

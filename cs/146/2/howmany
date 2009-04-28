@@ -1,14 +1,3 @@
 #!/bin/bash
 
 ./whoson | wc -w
-
-x=0;
-
-for user in `who -q | grep -v '^#' | tr -s ' ' '\n' | sort | uniq`
-do
-    if [[ `groups $user` =~ ugrad ]]
-    then ((x++))
-    fi
-done
-
-echo $x

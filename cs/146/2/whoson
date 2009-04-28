@@ -2,7 +2,7 @@
 
 for user in `who -q | grep -v '^#' | tr -s ' ' '\n' | sort | uniq`
 do
-    if [[ `groups $user` =~ \bugrad\b ]]
+    if [[ `groups $user` =~ '\<ugrad\>' ]]
     then printf '%s ' $user
     fi
 done

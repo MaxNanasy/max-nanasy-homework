@@ -1,6 +1,24 @@
 #!/bin/sh
 
-while getopts abc:d option
+FORCE=no
+SIGNAL=
+PERCENT=0
+UID=
+UNAME=
+TIME=0
+MEMORY=0
+
+while getopts :u:fc:t:m: option
 do
-    echo "--> $option"
+    case $option in
+	f)  FORCE=yes
+	    ;;
+	c)  PERCENT="$OPTARG"
+	    ;;
+	t)  TIME="$OPTARG"
+	    ;;
+	m)  MEMORY="$OPTARG"
+	    ;;
+	u)  
+    esac
 done

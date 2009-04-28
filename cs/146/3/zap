@@ -1,24 +1,65 @@
-#!/bin/sh
+#!/bin/bash
 
 FORCE=no
 SIGNAL=
-PERCENT=0
-UID=
-UNAME=
-TIME=0
-MEMORY=0
+
+TEST='1'
+
+function augmentTest
+{
+    TEST="($TEST) && ($1)"
+}
+
+   pid=1
+   cpu=2
+   uid=3
+ uname=4
+  time=5
+memory=6
+
+oldOPTIND=1
 
 while getopts :u:fc:t:m: option
 do
     case $option in
-	f)  FORCE=yes
-	    ;;
-	c)  PERCENT="$OPTARG"
-	    ;;
-	t)  TIME="$OPTARG"
-	    ;;
-	m)  MEMORY="$OPTARG"
-	    ;;
-	u)  
+        f)  FORCE=yes                              ;;
+        c)  augmentTest     "\$$cpu    >= $OPTARG" ;;
+        t)  augmentTest     "\$$time   >= $OPTARG" ;;
+        m)  augmentTest     "\$$memory >= $OPTARG" ;;
+        u)  lastArgNumber=$((OPTIND-1))
+            if [ "${!lastArgNumber}" = -uid ]
+            then
+                augmentTest "\$$uid    == \"${!OPTIND}\""
+                ((OPTIND++))
+            else
+                augmentTest "\$$uname  == \"$OPTARG\""
+            fi                                     ;;
+        *)  if [ $oldOPTIND -eq $OPTIND ]
+            then
+                SIGNAL=${!OPTIND   }
+	        ((OPTIND++))
+	    else
+                SIGNAL=${!oldOPTIND}
+	    fi
     esac
+    oldOPTIND=$OPTIND
 done
+
+PIDS=`ps -e -o pid= -o pcpu= -o uid= -o user:256= -o etime= -o pmem= | awk "{ if ($TEST) print \\$$pid }"`
+
+if [ $FORCE = yes ]
+then
+    kill $SIGNAL $PIDS
+else
+    for pid in $PIDS
+    do
+        ps -fp $pid
+        printf 'Kill process? [y/N/q] '
+        read kill
+        case $kill in
+            [Yy]*) kill $SIGNAL $pid
+                ;;
+            [Qq]*) break
+        esac
+    done
+fi

@@ -2,31 +2,36 @@
 
 DB=~/phone.txt
 
-touch -a "$DB"
-
 INSENSITIVITY=
 ADD=no
 
 while getopts ai option
 do
     case $option in
-	a)  ADD=yesprintf '%s\n' "$OPTARG" >> "$DB"
+	a)  ADD=yes
 	    ;;
 	i)  INSENSITIVITY=-i
 	    ;;
-	*)  echo "Illegal option $option" >&2
+	*)  echo "Illegal option $OPTARG" >&2
 	    exit 1
     esac
 done
 
-if [ "$ADD" = yes -a -n "$INSENSITIVITY" ]
+if [ $# -ne $OPTIND ]
+then
+    echo 'Takes exactly one argument' >&2
+    exit 1
+fi
+
+if [ "$ADD" = yes ]
 then
     if [ -n "$INSENSITIVITY" ]
     then
 	echo 'Cannot specify both -a and -i' >&2
 	exit 1
     fi
-    printf '%s\n' "${!OPTIND}" >> $DB
+    printf '%s\n' "${!OPTIND}" >> "$DB"
 else
-    grep $INSENSITIVITY -- a "$DB"
+    touch -a "$DB"
+    grep $INSENSITIVITY -- "${!OPTIND}" "$DB" | sort -u
 fi

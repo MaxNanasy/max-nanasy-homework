@@ -8,12 +8,12 @@ ADD=no
 while getopts ai option
 do
     case $option in
-	a)  ADD=yes
-	    ;;
-	i)  INSENSITIVITY=-i
-	    ;;
-	*)  echo "Illegal option $OPTARG" >&2
-	    exit 1
+        a)  ADD=yes
+            ;;
+        i)  INSENSITIVITY=-i
+            ;;
+        *)  echo "Illegal option $OPTARG" >&2
+            exit 1
     esac
 done
 
@@ -27,8 +27,8 @@ if [ "$ADD" = yes ]
 then
     if [ -n "$INSENSITIVITY" ]
     then
-	echo 'Cannot specify both -a and -i' >&2
-	exit 1
+        echo 'Cannot specify both -a and -i' >&2
+        exit 1
     fi
     printf '%s\n' "${!OPTIND}" >> "$DB"
 else

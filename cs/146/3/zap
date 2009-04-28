@@ -37,15 +37,15 @@ do
         *)  if [ $oldOPTIND -eq $OPTIND ]
             then
                 SIGNAL=${!OPTIND   }
-	        ((OPTIND++))
-	    else
+                ((OPTIND++))
+            else
                 SIGNAL=${!oldOPTIND}
-	    fi
+            fi
     esac
     oldOPTIND=$OPTIND
 done
 
-PIDS=`ps -e -o pid= -o pcpu= -o uid= -o user:256= -o etime= -o pmem= | awk "{ if ($TEST) print \\$$pid }"`
+PIDS=`ps -e -o pid= -o pcpu= -o uid= -o user= -o etime= -o pmem= | awk "{ if ($TEST) print \\$$pid }"`
 
 if [ $FORCE = yes ]
 then
@@ -53,13 +53,17 @@ then
 else
     for pid in $PIDS
     do
-        ps -fp $pid
-        printf 'Kill process? [y/N/q] '
-        read kill
-        case $kill in
-            [Yy]*) kill $SIGNAL $pid
-                ;;
-            [Qq]*) break
-        esac
+        psOut="`ps -fp $pid`"
+        if [ "`printf '%s\n' "$psOut" | wc -l`" -eq 2 ]
+        then
+            printf '%s\n' "$psOut"
+            printf 'Kill process? [y/N/q] '
+            read kill
+            case $kill in
+                [Yy]*) kill $SIGNAL $pid
+                    ;;
+                [Qq]*) break
+            esac
+        fi
     done
 fi

@@ -15,13 +15,44 @@ public interface Rule
 
 	public ParseStatus parse (Parser a) throws IOException;
 
+	public class Named implements Parseable
+	{
+
+	    String name;
+	    Parseable rule;
+
+	    Named (String name, Parseable rule)
+	    {
+		this.name = name;
+		this.rule = rule;
+	    }
+
+	    public ParseStatus parse (Parser p) throws IOException
+	    {
+		p.printRule (name);
+		p.tabCount ++;
+		ParseStatus ps = rule.parse (p);
+		if (ps != ParseStatus.SUCCESS)
+		    p.undoPrintRule ();
+		p.tabCount --;
+		return ps;
+	    }
+
+	    public void associate (Parseable rule)
+	    {
+		this.rule = rule;
+	    }
+
+	}
+
 	public final class Constructor
 	{
 
 	    public static final Parseable epsilon = new Epsilon ();
 	    public static final Parseable empty   = new Empty ();
 
-	    public static final Parseable named (String name, Parseable rule) { return new Named (name, rule); }
+	    public static final Parseable.Named named (String name, Parseable rule) { return new Named (name, rule); }
+	    public static final Parseable.Named named (String name) { return named (name, empty); }
 	    public static final Parseable terminal (int symbol) { return new Terminal (symbol); }
 
 	    public static final Parseable concat (Parseable... rules)
@@ -51,6 +82,7 @@ public interface Rule
 	    public static final Parseable many1 (Parseable rule) { return concat (rule, many (rule)); }
 
 	}
+
     }
 
 }
@@ -68,31 +100,6 @@ class Terminal implements Parseable
     public ParseStatus parse (Parser p) throws IOException
     {
 	return p.expect (symbol) ? ParseStatus.SUCCESS : ParseStatus.FAILURE;
-    }
-
-}
-
-class Named implements Parseable
-{
-
-    String name;
-    Parseable rule;
-
-    Named (String name, Parseable rule)
-    {
-	this.name = name;
-	this.rule = rule;
-    }
-
-    public ParseStatus parse (Parser p) throws IOException
-    {
-	p.printRule (name);
-	p.tabCount ++;
-	ParseStatus ps = rule.parse (p);
-	if (ps != ParseStatus.SUCCESS)
-	    p.undoPrintRule ();
-	p.tabCount --;
-	return ps;
     }
 
 }

@@ -4,6 +4,7 @@ public interface Expression
 {
 
     public SymbolTable.TypeDesignator type (SymbolTable table);
+    public boolean referenceable (SymbolTable table);
 
     interface Designator extends Expression
     {
@@ -24,6 +25,11 @@ public interface Expression
 		if (symbol == null) symbol = table.getBinding (name, "CONST");
 		if (symbol == null) return null;
 		else                return symbol.type ();
+	    }
+
+	    public boolean referenceable (SymbolTable table)
+	    {
+		return table.getBinding (name, "VAR") != null;
 	    }
 
 	}
@@ -47,6 +53,8 @@ public interface Expression
 		else              return type.dereferencedType ();
 	    }
 
+	    public boolean referenceable (SymbolTable table) { return true; }
+
 	}
 
     }
@@ -56,6 +64,7 @@ public interface Expression
 	short value;
 	Number (short v) { value = v; }
 	public SymbolTable.TypeDesignator type (SymbolTable table) { return SymbolTable.TypeDesignator.SHORT; }
+	public boolean referenceable (SymbolTable table) { return false; }
     }
 
     public class ProcedureCall implements Expression
@@ -72,10 +81,12 @@ public interface Expression
 
 	public SymbolTable.TypeDesignator type (SymbolTable table)
 	{
-	    SymbolTable.Symbol symbol = table.getBinding (name, "PROC");
+	    SymbolTable.Symbol symbol = table.getBinding (name, "PROCEDURE");
 	    if (symbol == null) return null;
 	    else                return symbol.type ();
 	}
+
+	public boolean referenceable (SymbolTable table) { return false; }
 
     }
 
@@ -92,7 +103,7 @@ public interface Expression
 
 	public SymbolTable.TypeDesignator type (SymbolTable table)
 	{
-	    return SymbolTable.TypeDesignator.Combine.symetrically (expression0.type (table), expression1.type (table));
+	    return SymbolTable.TypeDesignator.Combine.symmetrically (expression0.type (table), expression1.type (table));
 	}
 
 	public static class Addition       extends BinaryOperation
@@ -114,6 +125,8 @@ public interface Expression
 	{
 	    Division       (Expression e0, Expression e1) { super (e0, e1); }
 	}
+
+	public boolean referenceable (SymbolTable table) { return false; }
 
     }
 

@@ -3,10 +3,9 @@ import java.util.*;
 
 public class Parser
 {
-    public static int SYNTAX_ERROR = 0, SEMANTIC_ERROR = 1, 
-        UNDEFINED_ERROR = 2, REDEFINED_ERROR = 3;
-    
-    
+    public static int NO_ERROR=-1, SYNTAX_ERROR = 0, SEMANTIC_ERROR = 1,
+	UNDEFINED_ERROR = 2, REDEFINED_ERROR = 3, MISMATCH_ERROR=4, ARITY_ERROR=5;
+
     private Scanner scanner;
     public int sym; //Stores the current input from getSym()
     private static FileOutputStream outFile;
@@ -28,15 +27,28 @@ public class Parser
 	    printError (SEMANTIC_ERROR, UNDEFINED_ERROR);
 	return symbol;
     }
+
+    public SymbolTable.Symbol getVarOrConstBinding (SymbolTable table, String name)
+    {
+	SymbolTable.Symbol symbol = table.getBinding (name, "VAR");
+	if (symbol == null) {
+	    symbol = table.getBinding (name, "CONST");
+	    if (symbol == null)
+		    printError (SEMANTIC_ERROR, UNDEFINED_ERROR);
+	}
+	return symbol;
+    }
     
     private void printError(int errorType, int symOrError)
     {
         //For Comparing Output: please use this format as it will be used
         //to compare output results
-        fileData.println("Error: " + ((errorType == SYNTAX_ERROR)? "SYNTAX: "
-                                      : "SEMANTIC: ") +
-                         ((errorType == SYNTAX_ERROR)? Scanner.Terminal[symOrError] :
-                          (symOrError == UNDEFINED_ERROR)? " UNDEFINED SYMBOL" : "REDEFINED SYMBOL"));
+	fileData.println("Error: " + ((errorType == SYNTAX_ERROR)? "SYNTAX: "
+				      : "SEMANTIC: ") +
+			 ((errorType == SYNTAX_ERROR)? Scanner.Terminal[symOrError] :
+			  (symOrError == UNDEFINED_ERROR)? " UNDEFINED SYMBOL" :
+			  (symOrError == REDEFINED_ERROR) ? "REDEFINED SYMBOL" :
+			  (symOrError == MISMATCH_ERROR) ? "TYPE MISMATCH" : "ARITY ERROR"));
         
         symbolTable.printSymTable(fileData);
 
@@ -96,38 +108,39 @@ public class Parser
         expect(Scanner.CLOSE_PAREN);
         expect(Scanner.OPEN_BRACE);
 	SymbolTable.Symbol.SimplyTyped.Procedure main = new SymbolTable.Symbol.SimplyTyped.Procedure (SymbolTable.TypeDesignator.VOID, table);
+	bind (table, "MAIN", main);
 	declarations (main.table);
-	statementSequence (main.table);
+	statementSequence (main.table, SymbolTable.TypeDesignator.VOID);
         expect(Scanner.CLOSE_BRACE);
         expect(Scanner.END_OF);
-	bind (table, "MAIN", main);
+	main.parameters = null;
 	main.table = null;
     }
     
     /**
        statementSequence  =  statement {statement}
        * */
-    private void statementSequence(SymbolTable table)
+    private void statementSequence(SymbolTable table, SymbolTable.TypeDesignator enclosingType)
     {
-	if (! statement (table)) {
+	if (! statement (table, enclosingType)) {
 	    printError(sym);
 	    return;
 	}
-	while (statement (table));
+	while (statement (table, enclosingType));
     }
 
     /**
        statement =  assignment | input | output | ifStatement | whileStatement | returnStatement | procedureStatement.
        * */
-    private boolean statement (SymbolTable table) {
+    private boolean statement (SymbolTable table, SymbolTable.TypeDesignator enclosingType) {
 	switch (sym) {
 	case Scanner.IDENT : assignment         (table); break;
 	case Scanner.GET   : input              (table); break;
 	case Scanner.PRINT : output             (table); break;
-	case Scanner.IF    : ifStatement        (table); break;
-	case Scanner.WHILE : whileStatement     (table); break;
+	case Scanner.IF    : ifStatement        (table, enclosingType); break;
+	case Scanner.WHILE : whileStatement     (table, enclosingType); break;
 	case Scanner.COLON : procedureStatement (table); break;
-	case Scanner.RETURN: returnStatement    (table); break;
+	case Scanner.RETURN: returnStatement    (table, enclosingType); break;
 	default: return false;
 	}
 	return true;
@@ -144,19 +157,37 @@ public class Parser
 	expect (Scanner.COLON);
 	expect (Scanner.COLON);
 	String name = ident ();
+	SymbolTable.Symbol.SimplyTyped.Procedure procedure = (SymbolTable.Symbol.SimplyTyped.Procedure) getBinding (table, name, "PROCEDURE");
 	expect (Scanner.OPEN_PAREN);
 	if (! accept (Scanner.CLOSE_PAREN)) {
-	    List <Expression> arguments = parameters();
+	    List <Expression> arguments = parameters (table);
+	    Iterator <Expression> ai;
+	    Iterator <SymbolTable.Entry <String, SymbolTable.Symbol>> pi;
+	    for (ai = arguments.iterator (), pi = procedure.parameters.iterator (); ai.hasNext () && pi.hasNext ();) {
+		Expression         a = ai.next ()      ;
+		SymbolTable.Symbol p = pi.next ().value;
+		if (((SymbolTable.Symbol.SimplyTyped.Variable) p).reference)
+		    if (! a.referenceable (table)) printError (SEMANTIC_ERROR, MISMATCH_ERROR);
+		if (SymbolTable.TypeDesignator.Combine.procedureArgument (p.type (), a.type (table)) == null) printError (SEMANTIC_ERROR, MISMATCH_ERROR);
+	    }
+	    if (ai.hasNext () || pi.hasNext ())
+		printError (SEMANTIC_ERROR, ARITY_ERROR);
+	    
+	    
 	    expect(Scanner.CLOSE_PAREN);
 	    return new Expression.ProcedureCall (name, arguments);
 	}
-	else return new Expression.ProcedureCall (name, new LinkedList <Expression> ());
+	else if (procedure.parameters.isEmpty ()) return new Expression.ProcedureCall (name, new LinkedList <Expression> ());
+	else printError (SEMANTIC_ERROR, ARITY_ERROR);
+	return null;
     }
 
     // returnStatement = _return  expression _;
-    private void returnStatement (SymbolTable table) {
+    private void returnStatement (SymbolTable table, SymbolTable.TypeDesignator enclosingType) {
 	expect (Scanner.RETURN);
-	expression (table);
+	Expression returnValue = expression (table);
+	if (SymbolTable.TypeDesignator.Combine.procedureReturn (enclosingType, returnValue.type (table)) == null)
+	    printError (SEMANTIC_ERROR, MISMATCH_ERROR);
 	expect (Scanner.SEMI_COLON);
     }
  
@@ -182,7 +213,7 @@ public class Parser
 	if (sym==(Scanner.IDENT)||sym==(Scanner.NUMBER)||sym==Scanner.COLON||sym==Scanner.OPEN_PAREN) {
 	    Expression expression = factor (table);
 	    while (accept(Scanner.MULT_OP) || accept(Scanner.DIV)){
-		expression = new Expression.BinaryOperation.Multiplication (expression, factor());
+		expression = new Expression.BinaryOperation.Multiplication (expression, factor (table));
 	    }
 	    return expression;
 	}
@@ -195,7 +226,7 @@ public class Parser
     // factor  =  designator  |  number  | procedureCall |  _( expression _)
     private Expression factor (SymbolTable table) {
 	switch (sym) {
-	case Scanner.IDENT : return designator    ()                 ;
+	case Scanner.IDENT : return designator    (table)            ;
 	case Scanner.NUMBER: return new Expression.Number (number ());
 	case Scanner.COLON : return procedureCall (table)            ;
 	case Scanner.OPEN_PAREN:
@@ -210,13 +241,18 @@ public class Parser
     }
     
     // designator = ident { [ expr ]}
-    private Expression designator () {
+    private Expression designator (SymbolTable table)
+    {
 	if (sym==Scanner.IDENT){
-	    Expression.Designator designator = new Expression.Designator.Variable (ident ());
+	    String name = ident ();
+	    getVarOrConstBinding (table, name);
+	    Expression.Designator designator = new Expression.Designator.Variable (name);
 	    while (accept (Scanner.OPEN_BRKT)) {
-		designator = new Expression.Designator.ArrayReference (designator, expression ());
+		designator = new Expression.Designator.ArrayReference (designator, expression (table));
 		expect(Scanner.CLOSE_BRKT);
 	    }
+	    SymbolTable.TypeDesignator type = designator.type (table);
+	    if (type == null || type.dereferencedType () != null) printError (SEMANTIC_ERROR, ARITY_ERROR);
 	    return designator;
 	} else {
 	    printError(sym);
@@ -225,11 +261,11 @@ public class Parser
     }
     
     //whileStatement  =  _while condition _{ statementSequence  _}
-    private void whileStatement (SymbolTable table) {
+    private void whileStatement (SymbolTable table, SymbolTable.TypeDesignator enclosingType) {
 	expect (Scanner.WHILE);
 	condition (table);
 	expect(Scanner.OPEN_BRACE);
-	statementSequence (table);
+	statementSequence (table, enclosingType);
 	expect(Scanner.CLOSE_BRACE);
     }
 
@@ -246,7 +282,7 @@ public class Parser
 	    printError(sym);
 	    return;
 	}
-	expression ();
+	expression (table);
 	expect(Scanner.CLOSE_PAREN);
     }
     
@@ -254,15 +290,15 @@ public class Parser
     /* ifStatement  =  _if condition _{ statementSequence  _}
        [  else_{ statementSequence  _} ] */
 
-    private void ifStatement (SymbolTable table) {
+    private void ifStatement (SymbolTable table, SymbolTable.TypeDesignator enclosingType) {
 	expect(Scanner.IF);
 	condition (table);
 	expect (Scanner.OPEN_BRACE);
-	statementSequence (table);
+	statementSequence (table, enclosingType);
 	expect (Scanner.CLOSE_BRACE);
 	if (accept (Scanner.ELSE)){
 	    expect (Scanner.OPEN_BRACE);
-	    statementSequence (table);
+	    statementSequence (table, enclosingType);
 	    expect (Scanner.CLOSE_BRACE);
 	}
     }
@@ -283,7 +319,7 @@ public class Parser
     {
 	expect(Scanner.GET);
 	expect(Scanner.OPEN_PAREN);
-	parameters (table);
+	for (Expression a : parameters (table)) if (! a.referenceable (table)) printError (SEMANTIC_ERROR, MISMATCH_ERROR);
 	expect(Scanner.CLOSE_PAREN);
 	expect(Scanner.SEMI_COLON);
     }
@@ -293,13 +329,12 @@ public class Parser
        * */
     private void assignment (SymbolTable table)
     {
-	if (sym != Scanner.IDENT){
-	    printError(sym);
-	    return;
-	}
-	SymbolTable.TypeDesignator type0 = designator ().type (table);
+	if (sym != Scanner.IDENT) printError(sym);
+	SymbolTable.TypeDesignator type0 = designator (table).type (table);
+	if (type0.dereferencedType () != null) printError (SEMANTIC_ERROR, ARITY_ERROR);
 	expect(Scanner.ASSIGN_OP);
-	SymbolTable.TypeDesignator type1 = expression ().type (table);
+	SymbolTable.TypeDesignator type1 = expression (table).type (table);
+	if (SymbolTable.TypeDesignator.Combine.assignment (type0, type1) == null) printError (SEMANTIC_ERROR, MISMATCH_ERROR);
 	expect(Scanner.SEMI_COLON);
     }
     
@@ -320,11 +355,11 @@ public class Parser
 		SymbolTable.Symbol.SimplyTyped.Procedure procedure = new SymbolTable.Symbol.SimplyTyped.Procedure (type, table);
 		bind (table, ident (), procedure);
 		expect (Scanner.OPEN_PAREN);
-		procedureFormalParams (procedure.table);
+		procedureFormalParams (procedure.parameters, procedure.table);
 		expect (Scanner.CLOSE_PAREN);
 		expect (Scanner.OPEN_BRACE);
 		declarations (procedure.table);
-		statementSequence (table);
+		statementSequence (procedure.table, type);
 		expect (Scanner.CLOSE_BRACE);
 		procedure.table = null;
             }
@@ -332,13 +367,14 @@ public class Parser
     }
     
     // procedureFormalParams = [ type [ _& ] ident {_, type [ _& ] ident }]
-    private void procedureFormalParams(SymbolTable table) {
+    private void procedureFormalParams(SymbolTable parameters, SymbolTable table) {
 	if (nextIsType ()){
 	    do {
 		SymbolTable.TypeDesignator type = type (table);
-		accept(Scanner.AMPERSAND);
+		boolean reference = accept(Scanner.AMPERSAND);
 		String name = ident();
-		bind (table, name, new SymbolTable.Symbol.SimplyTyped.Variable (type));
+		bind (parameters, name, new SymbolTable.Symbol.SimplyTyped.Variable (type, reference));
+		bind (table     , name, new SymbolTable.Symbol.SimplyTyped.Variable (type, reference));
 	    } while (accept(Scanner.COMMA));
 	}
     }
@@ -348,15 +384,14 @@ public class Parser
     {
 	return sym == Scanner.IDENT || sym == Scanner.INT || sym == Scanner.SHORT;
     }
-	    
+    
     
     // type = ident | int | short
     private SymbolTable.TypeDesignator type (SymbolTable table) {
 
 	if (sym == Scanner.IDENT) {
 	    String name = ident ();
-	    getBinding (table, name, "TYPE").type ();
-	    return new SymbolTable.TypeDesignator.Atomic (name);
+	    return new SymbolTable.TypeDesignator.Named (name, getBinding (table, name, "TYPE").type ());
 	}
 	else if (accept (Scanner.INT))   return SymbolTable.TypeDesignator.INT  ;
 	else if (accept (Scanner.SHORT)) return SymbolTable.TypeDesignator.SHORT;
@@ -433,7 +468,7 @@ public class Parser
 		    expect(Scanner.COLON);
                     SymbolTable.TypeDesignator type = newType (table);
                     expect(Scanner.SEMI_COLON);
-		    for (String name : names) bind (table, name, new SymbolTable.Symbol.SimplyTyped.Variable (type));
+		    for (String name : names) bind (table, name, new SymbolTable.Symbol.SimplyTyped.Variable (type, false));
                 }
             }
         }
@@ -473,7 +508,7 @@ public class Parser
 	}
 	LinkedList <Expression> parameters = new LinkedList <Expression> ();
 	do {
-	    parameters.add (designator ());
+	    parameters.add (designator (table));
 	} while (accept (Scanner.COMMA));
 	return parameters;
     }

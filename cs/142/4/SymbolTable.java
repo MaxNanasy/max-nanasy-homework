@@ -18,16 +18,10 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 
     public Symbol getBinding (String name, String clase)
     {
-	//	System.out.println ("START " + name + " " + clase);
 	for (SymbolTable table = this; table != null; table = table.parent)
-	    for (Entry <String, Symbol> entry : table) {
-		//		System.out.println ("start " + entry.key + " " + entry.value.clase ());
-		if (entry.key.equals (name) && entry.value.clase ().equals (clase)) {
-		    //		    System.out.println ("end " + entry.key + " " + entry.value.clase ());
-		    //		    System.out.println ("END " + name + " " + clase);
+	    for (Entry <String, Symbol> entry : table)
+		if (entry.key.equals (name) && entry.value.clase ().equals (clase))
 		    return entry.value;
-		}
-	    }
 	return null;
     }
 
@@ -87,11 +81,12 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
     {
 
 	public TypeDesignator dereferencedType ();
+	public TypeDesignator normalizedType ();
 
 	public static final class Combine
 	{
 
-	    public static TypeDesignator symetrically (TypeDesignator type0, TypeDesignator type1)
+	    private static TypeDesignator symmetricallyNormalized (TypeDesignator type0, TypeDesignator type1)
 	    {
 
 		if (type0 == null || type1 == null) return null;
@@ -107,13 +102,45 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 		return null;
 
 	    }
+		
+
+	    public static TypeDesignator symmetrically (TypeDesignator type0, TypeDesignator type1)
+	    {
+		return symmetricallyNormalized (type0 == null ? null : type0.normalizedType (), type1 == null ? null : type1.normalizedType ());
+	    }
 
 	    public static TypeDesignator assignment (TypeDesignator designatorType, TypeDesignator expressionType)
 	    {
+		if (designatorType != null) designatorType = designatorType.normalizedType ();
+		if (expressionType != null) expressionType = expressionType.normalizedType ();
 		if (designatorType != null && expressionType != null && designatorType.toString ().equals ("short") && expressionType.toString ().equals ("int")) return null;
-		else return symetrically (designatorType, expressionType);
+		else return symmetricallyNormalized (designatorType, expressionType);
 	    }
 
+	    public static TypeDesignator procedureReturn (TypeDesignator procedureType, TypeDesignator returnType)
+	    {
+		return assignment (procedureType, returnType);
+	    }
+
+	    public static TypeDesignator procedureArgument (TypeDesignator parameterType, TypeDesignator argumentType)
+	    {
+		return assignment (parameterType, argumentType);
+	    }
+
+	}
+
+	public class Named implements TypeDesignator
+	{
+	    String name;
+	    TypeDesignator baseType;
+	    Named (String n, TypeDesignator bt)
+	    {
+		name = n;
+		baseType = bt;
+	    }
+	    public String toString () { return name; }
+	    public TypeDesignator dereferencedType () { return baseType.dereferencedType (); }
+	    public TypeDesignator normalizedType () { return baseType.normalizedType (); }
 	}
 
 	public class Atomic implements TypeDesignator
@@ -125,6 +152,7 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 	    }
 	    public String toString () { return name; }
 	    public TypeDesignator dereferencedType () { return null; }
+	    public TypeDesignator normalizedType () { return this; }
 	}
 
 	public class Array implements TypeDesignator
@@ -138,6 +166,7 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 	    }
 	    public String toString () { return baseType + " D: " + length; }
 	    public TypeDesignator dereferencedType () { return baseType; }
+	    public TypeDesignator normalizedType () { return new Array (baseType.normalizedType (), length); }
 	}
 
 	public static final TypeDesignator
@@ -190,11 +219,12 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 	    public static class Procedure extends SimplyTyped
 	    {
 
-		public SymbolTable table;
+		public SymbolTable parameters, table;
 
 		Procedure (TypeDesignator t, SymbolTable parent)
 		{
 		    super (t);
+		    parameters = new SymbolTable ();
 		    table = new SymbolTable (parent);
 		}
 
@@ -211,12 +241,13 @@ public class SymbolTable extends LinkedList <SymbolTable.Entry <String, SymbolTa
 	    {
 		public String clase () { return "VAR"; }
 		public void printValueTo (PrintStream output, int il) { output.println (); }
+		boolean reference;
 
-		Variable (TypeDesignator t)
+		Variable (TypeDesignator t, boolean r)
 		{
 		    super (t);
+		    reference = r;
 		}
-
 	    }
 
 	    public static class Type extends SimplyTyped

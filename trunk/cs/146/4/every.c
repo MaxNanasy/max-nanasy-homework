@@ -1,13 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <setjmp.h>
 
 #define EVERY_VAR ("EVERY")
 
-struct lineSet {
-  unsigned int every, outOf;
-};
+struct lineSet { unsigned int every, outOf; };
 
 void echoLine (jmp_buf env, FILE *stream)
 {
@@ -34,13 +31,15 @@ void disregardLine (jmp_buf env, FILE *stream)
       longjmp (env, 1);
 }
 
-void processLineSet (jmp_buf env, struct lineSet set, FILE *stream)
+void processStream (struct lineSet set, FILE *stream)
 {
   int n;
-  for (;;) {
-    for (n = 0; n < set.every; ++ n) echoLine      (env, stream);
-    for (     ; n < set.outOf; ++ n) disregardLine (env, stream);
-  }
+  jmp_buf env;
+  if (! setjmp (env))
+    for (;;) {
+      for (n = 0; n < set.every; ++ n) echoLine      (env, stream);
+      for (     ; n < set.outOf; ++ n) disregardLine (env, stream);
+    }
 }
 
 struct lineSet parseLineSet (char *string)
@@ -60,11 +59,9 @@ int main (int argc, char *argv [])
 {
 
   char *valEVERY;
-  size_t length;
   struct lineSet set;
   char **filenames = argv + 1;
   FILE *stream;
-  jmp_buf env;
 
   if (argc > 1 && argv [1][0] == '-') {
     set = parseLineSet (argv [1] + 1);
@@ -73,18 +70,18 @@ int main (int argc, char *argv [])
   else
     set = parseLineSet ((valEVERY = getenv (EVERY_VAR)) ? valEVERY : "");
 
-  if (! * filenames) {
-    if (! setjmp (env))
-      processLineSet (env, set, stdin);
-  }
+  if (! * filenames)
+    processStream (set, stdin);
   else
     for (; * filenames; ++ filenames) {
-      stream = fopen (* filenames, "r");
-      if (! setjmp (env))
-        processLineSet (env, set, stream);
+      if (! (stream = fopen (* filenames, "r"))) {
+        fprintf (stderr, "%s: ", * filenames);
+        perror ("fopen");
+        exit (EXIT_FAILURE);
+      }
+      processStream (set, stream);
     }
 
-
-  return 0;
+  return EXIT_SUCCESS;
 
 }

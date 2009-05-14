@@ -17,6 +17,7 @@ struct pathAndStat { char *path; struct stat stats ; } ;
 
 static struct options options;
 static int cwdFD;
+static bool firstProcessedDirectory;
 
 void perror2 (char *string0, char *string1)
 {
@@ -163,8 +164,13 @@ void processExplicitPath (char *path)
   if (mlstat (path, &stats) < 0)
     perror2 ("stat", path);
   else if (S_ISDIR (stats.st_mode)) {
-    if (! options.oneArgument)
+    if (! options.oneArgument) {
+      if (firstProcessedDirectory)
+        firstProcessedDirectory = false;
+      else
+        putchar ('\n');
       printf ("%s:\n", path);
+    }
     processDirectory (path);
   }
   else {
@@ -181,6 +187,7 @@ int main (int argc, char *argv [])
   int i;
 
   cwdFD = open (".", 0);
+  firstProcessedDirectory = true;
 
   if (optind == argc)
     processExplicitPath (".");

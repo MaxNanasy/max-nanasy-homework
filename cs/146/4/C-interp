@@ -1,0 +1,8 @@
+#!/bin/sh
+
+TMPDIR="`mktemp -d`"
+cleanup () { rm -r "$TMPDIR" ; }
+PROGRAM_PATH="$TMPDIR/`basename "$0"`"
+
+trap cleanup 0 1 2 3 15
+gcc -o "$PROGRAM_PATH" "$0.c" && "$PROGRAM_PATH" "$@"

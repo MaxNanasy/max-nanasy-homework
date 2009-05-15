@@ -82,6 +82,6 @@ int main (int argc, char *argv [])
       processStream (set, stream);
     }
 
-  return 0;
+  return EXIT_SUCCESS;
 
 }

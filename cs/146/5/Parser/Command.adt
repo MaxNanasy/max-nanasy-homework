@@ -1,0 +1,10 @@
+%{
+#include "list.h"
+%}
+%[
+#include "list.h"
+%]
+
+data Command CMD = SimpleCommand (List words, List redirects)
+                 |   PipeCommand (Command producer, Command consumer)
+                 ;

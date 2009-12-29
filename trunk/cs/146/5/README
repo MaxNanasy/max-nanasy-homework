@@ -1,0 +1,7 @@
+Type make in this directory to compile the project.  To execute the parser, type Parser/Parser .
+
+The following utilities are required:
+  lex
+  yacc
+  gcc
+  ld

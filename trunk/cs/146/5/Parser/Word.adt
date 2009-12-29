@@ -1,0 +1,13 @@
+%{
+#include <stdbool.h>
+#include "list.h"
+typedef List Word;
+%}
+
+%[
+#include <stdbool.h>
+%]
+
+data WordSegment WS = SimpleWordSegment (char *string)
+                    | VariableReference (bool isDoubleQuoted, char *name)
+                    ;

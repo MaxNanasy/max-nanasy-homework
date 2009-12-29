@@ -1,0 +1,59 @@
+#include <stdlib.h>
+#include "CommandLine.h"
+#include "list.h"
+#include "debug.h"
+
+SimpleCommand newSimpleCommand (List words, List redirects)
+{
+  SimpleCommand simpleCommand = (SimpleCommand) malloc (sizeof (struct simpleCommand));
+  debug ("Allocated SimpleCommand\n");
+  simpleCommand -> type      = CL_SimpleCommand;
+  simpleCommand -> words     = words           ;
+  simpleCommand -> redirects = redirects       ;
+  return simpleCommand;
+}
+
+Pipe newPipe (CommandLine producer, CommandLine consumer)
+{
+  Pipe pipe = (Pipe) malloc (sizeof (struct pipe));
+  debug ("Allocated Pipe\n");
+  pipe -> type     = CL_Pipe ;
+  pipe -> producer = producer;
+  pipe -> consumer = consumer;
+  return pipe;
+}
+
+void freeCommandLine (CommandLine commandLine)
+{
+  switch (*commandLine) {
+  case CL_SimpleCommand:
+    freeList (((SimpleCommand) commandLine) -> words    );
+    freeList (((SimpleCommand) commandLine) -> redirects);
+    debug ("Deallocated SimpleCommand\n");
+    break;
+  case CL_Pipe:
+    freeCommandLine (((Pipe) commandLine) -> producer);
+    freeCommandLine (((Pipe) commandLine) -> consumer);
+    debug ("Deallocated Pipe\n");
+    break;
+  }
+  free (commandLine);
+}
+
+Redirect newRedirect (enum redirectType type, Word left, Word right)
+{
+  Redirect redirect = (Redirect) malloc (sizeof (struct redirect));
+  debug ("Allocated Redirect\n");
+  redirect -> type  = type ;
+  redirect -> left  = left ;
+  redirect -> right = right;
+  return redirect;
+}
+
+void freeRedirect (Redirect redirect)
+{
+  free (redirect -> left );
+  free (redirect -> right);
+  free (redirect         );
+  debug ("Deallocated Redirect\n");
+}

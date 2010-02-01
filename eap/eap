@@ -1,0 +1,73 @@
+C : Calculus
+A1: Algebra
+
+NS   : Number Sense
+AaF  : Algebra and Functions
+MaG  : Measurement and Geometry
+SDAaP: Statistics, Data Analysis, and Probability
+
+Course Level - Sub-topic - Difficulty - Standard - SMI Alignment - Key Understanding
+
+sample question bank problems 0
+  0. Solve ( 4 * x = 16 ) for x.
+     K-7 - linear equation - A - 6AaF 1.1 - - Solve one-step linear equation
+  1. Solve ( 4 * x + 56 = 72 ) for x.
+     K-7 - linear equation - A - 7AaF 4.1 - - Solve two-step linear equation
+  2. Solve ( (x + 14) / 24 = 3 / 4 ) for x.
+     K-7 - linear equation - A - 7AaF 4.1 - - Solve two-step linear equation
+  3. Solve ( (x + 14) / (10 - x) = 3 ) for x.
+     Algebra I - rational equation - A - A1 13.0 - - Solve rational equation
+  4. <original problem>
+     Algebra I - number line; linear equation - A - 4MaG 2.2; A1 5.0 - - Solve multistep linear equation derived from number line
+
+MFCPS p308 4.0-i
+  0. <original problem>
+     K-7 - simplification; distribution - A - 7AaF 1.3 - - Simplify a polynomial expression through the distributive property
+  1. Solve ( 2 * (3 * x + 1) = 8 * x ) for x.
+     Algebra I - linear equation - A - A1 5.0 - - Sove multistep linear equation
+  2. Alice is twice as old as Bob and eight times as old as Dick.  Bob is one year older than Carol.  Carol is thrice as old as Dick.  How old is Dick?
+     Algebra I - linear equation - A - A1 5.0 - - Solve multistep linear equation derived from verbal description
+
+MFCPS p308 5.0-i
+  0. Solve ( 1600 - .075 * x < 100 ) for x.
+     K-7 - linear inequality - A - 7AaF 4.1 - - Solve two-step linear inequality
+  1. <original problem>
+     K-7 - linear inequality - A - 7AaF 1.1, 4.1 - - Solve two-step linear inequality derived from verbal description
+  2. <original problem, but other expenses are $400, and the problem is to find the net income, assuming ( net = gross - expenses ) >
+     K-7 - linear inequality - A - 7AaF 1.1, 4.1 - - Solve two-step linear inequality derived from verbal description
+
+MFCPS p308 5.0-iii
+  0. Solve ( (3 / 5) * x + 4 = 24 ) for x.
+     K-7 - linear equation - A - 5AaF 1.2 - - Solve one-step linear equation
+  1. <original problem>
+     K-7 - linear equation - A - 5AaF 1.2; 6AaF 2.1 - - Solve one-step linear equation derived from verbal description
+  2. Four more than three-fifths of a number is three more than four-fifths of said number.  Find said number.
+     K-7 - linear equation - A - 5AaF 1.2; 7AaF 4.1 - - Solve two-step linear equation derived from verbal description
+
+MFCPS p309 12.0-i
+  0. Factor ( x^2 + 13 * x + 30 ).
+     Algebra I - polynomial factoring - A - A1 11.0 - - Polynomial factoring
+  1. Factor ( x^3 + x^2 - 6 * x ).
+     Algebra I - polynomial factoring - A - A1 11.0 - - Polynomial factoring
+  2. <original problem>
+     Algebra I - polynomial division - B - A1 12.0 - - Polynomial division
+  3. Solve ( (x^3 + x^2 - 6 * x) / (x^2 + 13 * x + 30) = x - 12 ) for x.
+     Algebra I - polynomial division; rational equation solving - B - A1 12.0; A1 13.0 - - Solve rational polynomial equation
+
+MFCPS p321 1.0-i
+  0. What is ( 1 - (1 - 0.95) * (1 - 0.90) ) ?
+     K-7 - arithmetic - A - 5NS2.0 - - Decimal arithmetic
+  1. <original problem>
+     K-7 - probability - A - 6SDAaP 3.3, 3.4 - - Negated combined probability of negated independent events
+  2. What are the respective probabilities that both or neither alarm will operate?
+     K-7 - probability - A - 6SDAaP 3.3, 3.4  - - Combined probability of independent negated events.
+  3. There are n alarms, each with an independent probability p of operating.  What are the respective probabilities of all or none operating?
+     K-7 - probability; exponentiation - B - 6SDAaP 3.3, 3.4; 7NS 2.1 - - Combined probability of independent events
+
+MFCPS p326 8.0-ii
+  0. For ( f (x) = 3 ) , what is ( f' (x) ) ?
+     Pre-Calc - derivative - A - C 4.0 - - Derivative of a constant
+  1. For ( f (x) = k ) , for some constant k, what is f' (x) ?
+     Pre-Calc - derivative - B - C 4.0 - - Derivative of a constant
+  2. <original problem>
+     Pre-Calc - derivative; proof - C - C 4.0 - - Derivative of a constant

@@ -1,10 +1,11 @@
+Set Silent.
+
 Require Import Reals.
 Local Open Scope R_scope.
 
 Theorem additive_equality : forall z x y, x + z = y + z -> x = y.
   (*proof.
   let z, x, y be such that (x + z = y + z).*)
-  
   intros.
   assert (x + z + - z = y + z + - z) by congruence.
   rewrite ?Rplus_assoc, Rplus_opp_r, ?Rplus_0_r in H0 ; assumption.
@@ -63,9 +64,6 @@ Qed.
 
 Theorem p_0_2 : forall x, (x + 14) / 24 = 3 / 4 -> x = 4.
   intros.
-  proof.
-  thus thesis.
-  end proof.
   apply cross_multiply_1 in H ; discrR.
   replace (3 * 24) with 72 in H by Rcompute.
   rewrite Rmult_plus_distr_r in H.
@@ -145,11 +143,6 @@ Theorem p_1_2 : forall a b c d, a = 2 * b -> a = 8 * d -> b = c + 1 -> c = 3 * d
   Show Tree.
 Qed.
 
-(*Ltac contradicted tactic :=
-  pose 0 as temp ; contradict temp ;
-  apply tactic in temp ; [
-  contradict temp ; clear temp].*)
-
 Theorem p_2_0 : forall x, 1600 - (75 / 1000) * x < 100 <-> x > 20000.
   intros.
   replace (75 / 1000) with (3 / 40).
@@ -220,18 +213,11 @@ Theorem p_2_2 : forall net gross, net = gross - 400 -> (1600 - (75 / 1000) * gro
   Show Tree.
 Qed.
 
-Theorem p_3_0 : forall x, (3 / 5) * x + 4 = 24 -> x = 100 / 3.
+(*Theorem p_3_0 : forall x, (3 / 5) * x + 4 = 24 -> x = 100 / 3.
   intros.
   replace 24 with (20 + 4) in H by Rcompute.
   apply additive_equality in H.
   replace 20 with ((3 / 5) * (100 / 3)) in H.
   rewrite Rmult_comm, (Rmult_comm _ (100 / 3)) in H.
   apply multiplicative_equality in H ; try assumption.
-  assert (2 / 4 = 1 / 2).
-  field.
-  unfold Qeq.
-  auto.
-  compute.
-  apply (Qeq (2 # 4) (1 # 2)).
-  apply Qeq_eqR.
-  contradict H.
+  contradict H.*)

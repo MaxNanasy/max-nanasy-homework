@@ -1,30 +1,38 @@
-Set Silent.
-
 Require Import Reals.
 Local Open Scope R_scope.
 
 Theorem additive_equality : forall z x y, x + z = y + z -> x = y.
-  (*proof.
-  let z, x, y be such that (x + z = y + z).*)
-  intros.
-  assert (x + z + - z = y + z + - z) by congruence.
-  rewrite ?Rplus_assoc, Rplus_opp_r, ?Rplus_0_r in H0 ; assumption.
-  Show Tree.
+  proof.
+    let z, x, y be such that
+           (x + z         = y + z        ).
+      then (x + z + - z   = y + z + - z  ).
+      then (x + (z + - z) = y + (z + - z)) by Rplus_assoc.
+      then (x + 0         = y + 0        ) by Rplus_opp_r.
+      hence thesis                         by Rplus_0_r  .
+  end proof.
 Qed.
 
 Theorem multiplicative_equality : forall z x y, x * z = y * z -> z <> 0 -> x = y.
-  intros.
-  assert (x * z * / z = y * z * / z) by congruence.
-  rewrite ?Rmult_assoc, Rinv_r, ?Rmult_1_r in H1 ; assumption.
-  Show Tree.
+  proof.
+    let z, x, y be such that
+         H:(x * z         = y * z        ) and NZ:(z <> 0).
+      have (x * z * / z   = y * z * / z  ) by H.
+      then (x * (z * / z) = y * (z * / z)) by Rmult_assoc  .
+      then (x * 1         = y * 1        ) by (Rinv_r z NZ).
+      hence thesis                         by Rmult_1_r    .
+  end proof.
 Qed.
 
 Theorem divisive_equality : forall z x y, x / z = y / z -> z <> 0 -> x = y.
-  intros.
-  unfold Rdiv in H.
-  apply multiplicative_equality in H ; try apply Rinv_neq_0_compat ; assumption.
-  Show Tree.
+  proof.
+    let z, x, y be such that H:(x / z = y / z) and NZ:(z <> 0).
+      thus thesis by (multiplicative_equality (/ z) x y H (Rinv_neq_0_compat z NZ)).
+  end proof.
 Qed.
+
+Theorem cross_multiply : forall x y a b, y <> 0 -> b <> 0 -> (x * b = a * y <-> x / y = a / b).
+  proof.
+    let x, y, a, b be such that 
 
 Theorem cross_multiply_0 : forall x y a b, x * b = a * y -> y <> 0 -> b <> 0 -> x / y = a / b.
   intros.

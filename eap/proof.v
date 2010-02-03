@@ -1,18 +1,30 @@
 Require Import Reals.
 Local Open Scope R_scope.
 
-Theorem additive_equality : forall z x y, x + z = y + z -> x = y.
+(*Theorem Rplus_eq : forall z x y, x + z = y + z -> x = y.
   proof.
     let z, x, y be such that
-           (x + z         = y + z        ).
-      then (x + z + - z   = y + z + - z  ).
-      then (x + (z + - z) = y + (z + - z)) by Rplus_assoc.
-      then (x + 0         = y + 0        ) by Rplus_opp_r.
-      hence thesis                         by Rplus_0_r  .
+            (x + z         = y + z        ).
+      then  (x + z + - z   = y + z + - z  ).
+      then  (x + (z + - z) = y + (z + - z)) by Rplus_assoc.
+      then  (x + 0         = y + 0        ) by Rplus_opp_r.
+      hence (x             = y            ) by Rplus_0_r.
   end proof.
 Qed.
 
-Theorem multiplicative_equality : forall z x y, x * z = y * z -> z <> 0 -> x = y.
+Theorem Rplus_minus_eq : forall z x y, x = y + z -> x - z = y.
+  proof.
+    let z, x, y be such that
+            (x       = y + z         ).
+      then  (x + - z =  y + z + - z  ).
+                    ~= (y + (z + - z)) by Rplus_assoc.
+                    ~= (y + 0        ) by Rplus_opp_r.
+                    ~= (y            ) by Rplus_opp_r.
+      hence (x - z   = y             ).
+  end proof.
+Qed.
+
+Theorem Rmult_eq : forall z x y, x * z = y * z -> z <> 0 -> x = y.
   proof.
     let z, x, y be such that
          H:(x * z         = y * z        ) and NZ:(z <> 0).
@@ -32,7 +44,14 @@ Qed.
 
 Theorem cross_multiply : forall x y a b, y <> 0 -> b <> 0 -> (x * b = a * y <-> x / y = a / b).
   proof.
-    let x, y, a, b be such that 
+    let x:R, y, a:R, b be such that YNZ:(y <> 0) and BNZ:(b <> 0).
+      focus on H:(x * b = a * y -> x / y = a / b).
+        
+      end focus.
+      focus on (x / y = a / b -> x * b = a * y).
+      end focus.
+  end proof.
+Qed.*)
 
 Theorem cross_multiply_0 : forall x y a b, x * b = a * y -> y <> 0 -> b <> 0 -> x / y = a / b.
   intros.

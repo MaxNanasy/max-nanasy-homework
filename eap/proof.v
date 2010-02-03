@@ -1,76 +1,40 @@
 Require Import Reals.
 Local Open Scope R_scope.
 
-(*Theorem Rplus_eq : forall z x y, x + z = y + z -> x = y.
-  proof.
-    let z, x, y be such that
-            (x + z         = y + z        ).
-      then  (x + z + - z   = y + z + - z  ).
-      then  (x + (z + - z) = y + (z + - z)) by Rplus_assoc.
-      then  (x + 0         = y + 0        ) by Rplus_opp_r.
-      hence (x             = y            ) by Rplus_0_r.
-  end proof.
-Qed.
-
 Theorem Rplus_minus_eq : forall z x y, x = y + z -> x - z = y.
   proof.
     let z, x, y be such that
-            (x       = y + z         ).
+            (x       =  y + z        ).
       then  (x + - z =  y + z + - z  ).
                     ~= (y + (z + - z)) by Rplus_assoc.
                     ~= (y + 0        ) by Rplus_opp_r.
                     ~= (y            ) by Rplus_opp_r.
-      hence (x - z   = y             ).
+      hence (x - z   =  y            ).
   end proof.
 Qed.
 
-Theorem Rmult_eq : forall z x y, x * z = y * z -> z <> 0 -> x = y.
+Theorem Rdiv_mult_eq : forall z x y, z <> 0 -> x = y / z -> x * z = y.
   proof.
-    let z, x, y be such that
-         H:(x * z         = y * z        ) and NZ:(z <> 0).
-      have (x * z * / z   = y * z * / z  ) by H.
-      then (x * (z * / z) = y * (z * / z)) by Rmult_assoc  .
-      then (x * 1         = y * 1        ) by (Rinv_r z NZ).
-      hence thesis                         by Rmult_1_r    .
+    let z, x, y be such that NZ:(z <> 0) and
+          (x     =  y / z        ).
+    then  (x * z =  y / z * z    ).
+                ~= (y * (/ z * z)) by  Rmult_assoc .
+                ~= (y * 1        ) by (Rinv_l _ NZ).
+    hence (x * z =  y            ) by  Rmult_1_r   .
   end proof.
 Qed.
 
-Theorem divisive_equality : forall z x y, x / z = y / z -> z <> 0 -> x = y.
+Theorem cross_multiply : forall x y a b, y <> 0 -> b <> 0 -> (x / b = a / y -> x * y = a * b).
   proof.
-    let z, x, y be such that H:(x / z = y / z) and NZ:(z <> 0).
-      thus thesis by (multiplicative_equality (/ z) x y H (Rinv_neq_0_compat z NZ)).
+    let x:R, y, a:R, b be such that YNZ:(y <> 0) and BNZ:(b <> 0) and
+                (x * / b        = a / y    )               .
+          then  (x * / b * y    = a        ) by (Rdiv_mult_eq _ (x / b) a YNZ).
+          =~    (x * (/ b * y))              by Rmult_assoc                   .
+          =~    (x * (y * / b))              by Rmult_comm                    .
+          =~    (x * y * / b)                by Rmult_assoc                   .
+          then  (a              = x * y / b)                                  .
+          hence (x * y          = a * b)     by (Rdiv_mult_eq _ a (x * y) BNZ).
   end proof.
-Qed.
-
-Theorem cross_multiply : forall x y a b, y <> 0 -> b <> 0 -> (x * b = a * y <-> x / y = a / b).
-  proof.
-    let x:R, y, a:R, b be such that YNZ:(y <> 0) and BNZ:(b <> 0).
-      focus on H:(x * b = a * y -> x / y = a / b).
-        
-      end focus.
-      focus on (x / y = a / b -> x * b = a * y).
-      end focus.
-  end proof.
-Qed.*)
-
-Theorem cross_multiply_0 : forall x y a b, x * b = a * y -> y <> 0 -> b <> 0 -> x / y = a / b.
-  intros.
-  assert ((x * b) * / b = (a * y) * / b) by congruence.
-  rewrite Rmult_assoc, Rinv_r, Rmult_1_r in H2 by assumption.
-  assert (x * / y = a * y * / b * / y) by congruence.
-  rewrite Rmult_assoc, (Rmult_comm (/ b)), Rmult_assoc in H3.
-  rewrite <- (Rmult_assoc y) in H3.
-  rewrite Rinv_r, Rmult_1_l in H3 by assumption.
-  unfold Rdiv ; assumption.
-  Show Tree.
-Qed.
-
-Theorem cross_multiply_1 : forall x y a b, x / y = a / b -> y <> 0 -> b <> 0 -> x * b = a * y.
-  intros.
-  apply cross_multiply_0 in H ; try (apply Rinv_neq_0_compat ; assumption).
-  unfold Rdiv in H.
-  rewrite ?Rinv_involutive in H ; assumption.
-  Show Tree.
 Qed.
 
 Theorem p_0_0 : forall x, 4 * x = 16 -> x = 4.

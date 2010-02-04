@@ -123,122 +123,14 @@ Qed.
 Theorem p_1_0 : forall x, 2 * (3 * x + 1) - 8 * x = - 2 * x + 2.
   proof.
     let x:R.
-      have (2 * (3 * x + 1) - 8 * x =  2 * (3 * x + 1) - 8 * x).
-                                   ~= (2 * (3 * x) + 2 * 1 - 8 * x) by Rmult_plus_distr_l.
-                                   ~= (2 * 3 * x + 2 * 1 - 8 * x)   by Rmult_assoc.
-                                   ~= (6 * x + 2 - 8 * x)           using field.
-                                   ~= (
-  intros.
-  rewrite Rmult_plus_distr_l.
-  rewrite <- Rmult_assoc.
-  unfold Rminus.
-  rewrite Rplus_assoc.
-  rewrite (Rplus_comm (2 * 1)).
-  rewrite <- Rplus_assoc.
-  rewrite <- Ropp_mult_distr_l_reverse.
-  rewrite <- Rmult_plus_distr_r.
-  rewrite Rmult_1_r.
-  replace (6 + -8) with (-2) by Rcompute.
-  reflexivity.
-  Show Tree.
+      have  (2 * (3 * x + 1) - 8 * x =  2 * (3 * x + 1) - 8 * x    ).
+                                    ~= (2 * (3 * x) + 2 * 1 - 8 * x) by    Rmult_plus_distr_l       .
+                                    ~= (2 * 3 * x + 2 * 1 - 8 * x  ) by    Rmult_assoc              .
+                                    ~= (6 * x + 2 - 8 * x          ) using field                    .
+                                    ~= (6 * x + 2 + - (8 * x)      )                                .
+                                    ~= (6 * x + - (8 * x) + 2      ) by    Rplus_comm_3             .
+                                    ~= (6 * x + - 8 * x + 2        ) by    Ropp_mult_distr_l_reverse.
+                                    ~= ((6 + - 8) * x + 2          ) by    Rmult_plus_distr_r       .
+      hence (2 * (3 * x + 1) - 8 * x =  - 2 * x + 2                ) using field                    .
+  end proof.
 Qed.
-
-Theorem p_1_1 : forall x, 2 * (3 * x + 1) = 8 * x -> x = 1.
-  intros.
-  assert (2 * (3 * x + 1) - 8 * x = 8 * x - 8 * x) by congruence.
-  rewrite p_1_0 in H0.
-  unfold Rminus in H0.
-  rewrite Rplus_opp_r in H0.
-  replace 0 with (-2 + 2) in H0 by Rcompute.
-  apply additive_equality in H0.
-  rewrite Rmult_comm in H0.
-  rewrite <- (Rmult_1_l (-2)) in H0 at 2.
-  apply multiplicative_equality in H0 ; assumption || discrR.
-  Show Tree.
-Qed.
-
-Theorem p_1_2 : forall a b c d, a = 2 * b -> a = 8 * d -> b = c + 1 -> c = 3 * d -> d = 1.
-  intros.
-  rewrite H1 in H ; rewrite H2 in H ; rewrite H in H0.
-  apply p_1_1 in H0 ; assumption.
-  Show Tree.
-Qed.
-
-Theorem p_2_0 : forall x, 1600 - (75 / 1000) * x < 100 <-> x > 20000.
-  intros.
-  replace (75 / 1000) with (3 / 40).
-  assert ((40 * / 3) * (3 / 40) = 1) as id40_3.
-  rewrite <- Rinv_Rdiv ; discrR.
-  apply Rinv_r ; rewrite <- (div_id 0).
-  pose 0 as temp ; contradict temp. apply cross_multiply_1 in temp ; discrR. contradict temp ; clear temp ; discrR.
-  split ; intros.
-  apply (Rplus_lt_compat_l (-1600)) in H.
-  replace (-1600 + 100) with (-1500) in H by Rcompute.
-  unfold Rminus in H.
-  rewrite <- (Rplus_assoc (-1600)) in H.
-  rewrite Rplus_opp_l in H.
-  rewrite Rplus_0_l in H.
-  apply Ropp_lt_gt_contravar in H.
-  rewrite ?Ropp_involutive in H.
-  apply (Rmult_lt_compat_l (40 * / 3)) in H.
-  rewrite Rmult_assoc in H.
-  replace (/ 3 * 1500) with 500 in H.
-  replace (40 * 500) with 20000 in H by Rcompute.
-  rewrite <- (Rmult_assoc (40 * / 3)) in H.
-  rewrite id40_3 in H.
-  rewrite Rmult_1_l in H.
-  apply Rlt_gt ; assumption.
-  replace (/ 3 * 1500) with (1500 / 3).
-  rewrite <- (div_id 500) at 1.
-  apply cross_multiply_0 ; discrR.
-  Rcompute.
-  unfold Rdiv.
-  apply Rmult_comm.
-  apply Fourier_util.Rlt_mult_inv_pos ; prove_sup.
-  apply (Rplus_lt_reg_r (-1600)).
-  replace (-1600 + 100) with (-1500) by Rcompute.
-  unfold Rminus.
-  rewrite <- Rplus_assoc.
-  rewrite Rplus_opp_l.
-  rewrite Rplus_0_l.
-  apply Ropp_gt_lt_contravar.
-  apply (Rmult_lt_reg_l (40 * / 3)).
-  apply Fourier_util.Rlt_mult_inv_pos ; prove_sup.
-  rewrite <- (Rmult_assoc _ (3 / 40)).
-  rewrite id40_3.
-  rewrite Rmult_1_l.
-  rewrite Rmult_comm.
-  rewrite <- (Rmult_assoc 1500).
-  replace (1500 * 40) with 60000 by Rcompute.
-  replace (60000 * / 3) with 20000.
-  apply Rgt_lt ; assumption.
-  replace (60000 * / 3) with (60000 / 3) by (unfold Rdiv ; reflexivity).
-  rewrite <- (div_id 20000).
-  apply cross_multiply_0 ; discrR ; Rcompute.
-  apply cross_multiply_0 ; discrR ; Rcompute.
-  Show Tree.
-Qed.
-
-Theorem p_2_2 : forall net gross, net = gross - 400 -> (1600 - (75 / 1000) * gross < 100 <-> net > 19600).
-  intros.
-  unfold Rminus in H.
-  rewrite H.
-  split ; intros.
-  apply p_2_0 in H0. 
-  replace 19600 with (20000 + - 400) by Rcompute.
-  apply Rplus_gt_compat_r ; assumption.
-  replace 19600 with (20000 + - 400) in H0 by Rcompute.
-  rewrite Rplus_comm, (Rplus_comm 20000) in H0.
-  apply Rplus_gt_reg_l in H0.
-  apply p_2_0 in H0 ; assumption.
-  Show Tree.
-Qed.
-
-(*Theorem p_3_0 : forall x, (3 / 5) * x + 4 = 24 -> x = 100 / 3.
-  intros.
-  replace 24 with (20 + 4) in H by Rcompute.
-  apply additive_equality in H.
-  replace 20 with ((3 / 5) * (100 / 3)) in H.
-  rewrite Rmult_comm, (Rmult_comm _ (100 / 3)) in H.
-  apply multiplicative_equality in H ; try assumption.
-  contradict H.*)
